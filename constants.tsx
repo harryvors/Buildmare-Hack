@@ -1,4 +1,5 @@
 
+
 import { 
   Wifi, 
   Plug, 
@@ -93,6 +94,34 @@ export const MOCK_USER = {
     { id: 'r2', name: "20% Off Pastry", venue: "Code & Brew", code: "DEV-20" }
   ]
 };
+
+// Mock Shop Items (NFTs)
+export const SHOP_ITEMS = [
+  {
+    id: 'nft1',
+    name: 'Neon Coffee Cup',
+    description: 'Get 1 free coffee at any participating venue per month.',
+    cost: 500,
+    image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=400&h=400&fit=crop',
+    rarity: 'Common'
+  },
+  {
+    id: 'nft2',
+    name: 'Golden Wifi Router',
+    description: 'Access to VIP reserved seating in coworking zones.',
+    cost: 1500,
+    image: 'https://images.unsplash.com/photo-1563770095-39d468f95c3c?w=400&h=400&fit=crop',
+    rarity: 'Rare'
+  },
+  {
+    id: 'nft3',
+    name: 'Platinum Scout Badge',
+    description: 'Double points on all reviews for 30 days.',
+    cost: 3000,
+    image: 'https://images.unsplash.com/photo-1614853316966-2679d9c28581?w=400&h=400&fit=crop',
+    rarity: 'Legendary'
+  }
+];
 
 // Mock Data
 export const INITIAL_CAFES: Cafe[] = [

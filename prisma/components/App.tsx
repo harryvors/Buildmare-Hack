@@ -5,9 +5,11 @@ import { Sidebar } from './components/Sidebar';
 import { SearchFilter } from './components/SearchFilter';
 import { LocationPanel } from './components/LocationPanel';
 import { UserProfileModal } from './components/UserProfileModal';
+import { ShopModal } from './components/ShopModal';
+import { AddLocationModal } from './components/AddLocationModal';
 import { INITIAL_CAFES, COLORS } from './constants';
 import { Cafe, AmenityKey } from './types';
-import { Wallet, User } from 'lucide-react';
+import { Wallet, User, ShoppingBag, Plus } from 'lucide-react';
 import { GoogleGenAI } from "@google/genai";
 
 export default function App() {
@@ -16,6 +18,8 @@ export default function App() {
   const [activeFilter, setActiveFilter] = useState<AmenityKey | null>(null);
   const [groundingSources, setGroundingSources] = useState<{title: string, uri: string}[]>([]);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isShopOpen, setIsShopOpen] = useState(false);
+  const [isAddLocationOpen, setIsAddLocationOpen] = useState(false);
 
   // Fetch Real Data using Gemini API with Google Maps Tool
   useEffect(() => {
@@ -85,6 +89,9 @@ export default function App() {
               if (chunk.web?.uri && chunk.web?.title) {
                 return { title: chunk.web.title, uri: chunk.web.uri };
               }
+              if (chunk.maps?.uri) {
+                return { title: chunk.maps.title || 'Google Maps', uri: chunk.maps.uri };
+              }
               return null;
             })
             .filter((s: any) => s !== null) as {title: string, uri: string}[];
@@ -108,6 +115,24 @@ export default function App() {
     setSelectedCafeId(null);
   };
 
+  const handleSearch = (query: string) => {
+    if (!query.trim()) return;
+    const lowerQuery = query.toLowerCase();
+    
+    // Find first cafe that matches name or address
+    const match = cafes.find(c => 
+      c.name.toLowerCase().includes(lowerQuery) || 
+      c.address.toLowerCase().includes(lowerQuery)
+    );
+
+    if (match) {
+      setSelectedCafeId(match.id);
+    } else {
+      // Optional: Add a visual feedback/toast here if cafe not found
+      console.log("No cafe found matching:", query);
+    }
+  };
+
   const selectedCafe = cafes.find(c => c.id === selectedCafeId) || null;
 
   return (
@@ -117,6 +142,7 @@ export default function App() {
       <SearchFilter 
         activeFilter={activeFilter}
         onFilterChange={setActiveFilter}
+        onSearch={handleSearch}
       />
 
       {/* Location Context Panel (Left Sidebar Area) */}
@@ -155,13 +181,34 @@ export default function App() {
 
       {/* Top Right Action Buttons */}
       <div className="absolute top-6 right-6 sm:right-12 z-[1000] hidden sm:flex items-center gap-3">
+        
+        {/* Add Location Button */}
+        <button
+          onClick={() => setIsAddLocationOpen(true)}
+          className="p-3 rounded-xl backdrop-blur-md border border-slate-700/50 shadow-[0_0_15px_rgba(2,6,23,0.5)] transition-all hover:bg-slate-800/60 hover:border-emerald-500/30 hover:shadow-[0_0_15px_rgba(16,185,129,0.15)] active:scale-95 group"
+          style={{ backgroundColor: `${COLORS.bgCard}E6` }}
+          title="Add Location"
+        >
+          <Plus size={18} className="text-slate-300 group-hover:text-emerald-400 transition-colors" />
+        </button>
+
+        {/* Shop Button */}
+        <button
+          onClick={() => setIsShopOpen(true)}
+          className="p-3 rounded-xl backdrop-blur-md border border-slate-700/50 shadow-[0_0_15px_rgba(2,6,23,0.5)] transition-all hover:bg-slate-800/60 hover:border-cyan-500/30 hover:shadow-[0_0_15px_rgba(6,182,212,0.15)] active:scale-95 group"
+          style={{ backgroundColor: `${COLORS.bgCard}E6` }}
+          title="Points Shop"
+        >
+          <ShoppingBag size={18} className="text-slate-300 group-hover:text-cyan-400 transition-colors" />
+        </button>
+
         {/* User Profile Button */}
         <button
           onClick={() => setIsProfileOpen(true)}
-          className="p-3 rounded-xl backdrop-blur-md border border-slate-700/50 shadow-[0_0_15px_rgba(2,6,23,0.5)] transition-all hover:bg-slate-800/60 hover:border-cyan-500/30 hover:shadow-[0_0_15px_rgba(6,182,212,0.15)] active:scale-95 group"
+          className="p-3 rounded-xl backdrop-blur-md border border-slate-700/50 shadow-[0_0_15px_rgba(2,6,23,0.5)] transition-all hover:bg-slate-800/60 hover:border-purple-500/30 hover:shadow-[0_0_15px_rgba(192,132,252,0.15)] active:scale-95 group"
           style={{ backgroundColor: `${COLORS.bgCard}E6` }}
         >
-          <User size={18} className="text-slate-300 group-hover:text-cyan-400 transition-colors" />
+          <User size={18} className="text-slate-300 group-hover:text-purple-400 transition-colors" />
         </button>
 
         {/* Connect Wallet Button */}
@@ -192,6 +239,18 @@ export default function App() {
       <UserProfileModal 
         isOpen={isProfileOpen} 
         onClose={() => setIsProfileOpen(false)} 
+      />
+
+      {/* Shop Modal */}
+      <ShopModal
+        isOpen={isShopOpen}
+        onClose={() => setIsShopOpen(false)}
+      />
+
+      {/* Add Location Modal */}
+      <AddLocationModal
+        isOpen={isAddLocationOpen}
+        onClose={() => setIsAddLocationOpen(false)}
       />
 
       {/* X (Twitter) Logo (Bottom Right) */}

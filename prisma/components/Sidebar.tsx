@@ -102,11 +102,45 @@ export const Sidebar: React.FC<SidebarProps> = ({ cafe, onClose }) => {
             <p className="text-sm leading-relaxed border-l-2 border-slate-700 pl-4 italic" style={{ color: COLORS.textSecondary }}>
                 "{cafe.description}"
             </p>
+            
+            {/* Work Vibe Highlights (New UX Improvement) */}
+            <div>
+                 <h3 className="text-xs font-bold uppercase tracking-wider mb-3 text-slate-500">
+                    Work Vibe
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                    {cafe.amenities.wifi >= 8 && (
+                         <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
+                            🚀 Fast Wifi
+                         </span>
+                    )}
+                     {cafe.amenities.noise >= 8 && (
+                         <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-violet-500/20 text-violet-400 border border-violet-500/30 flex items-center gap-1">
+                            🤫 Quiet Zone
+                         </span>
+                    )}
+                     {cafe.amenities.outlet >= 8 && (
+                         <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center gap-1">
+                            ⚡ Many Plugs
+                         </span>
+                    )}
+                     {cafe.amenities.comfort >= 8 && (
+                         <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-sky-500/20 text-sky-400 border border-sky-500/30 flex items-center gap-1">
+                            🛋️ Comfy Seats
+                         </span>
+                    )}
+                    {cafe.amenities.quality >= 8 && (
+                         <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30 flex items-center gap-1">
+                            ☕ Top Tier Coffee
+                         </span>
+                    )}
+                </div>
+            </div>
 
             {/* Score Cards (The "Traffic Light" System) */}
             <div>
                 <h3 className="text-xs font-bold uppercase tracking-wider mb-4 text-slate-500">
-                    Review Scores
+                    Detailed Scores
                 </h3>
                 <div className="grid grid-cols-1 gap-3">
                     {(Object.keys(AMENITY_CONFIG) as AmenityKey[]).map((key) => {
@@ -150,13 +184,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ cafe, onClose }) => {
              {/* Footer Actions / Reviews */}
              <div className="pt-4 border-t border-slate-800">
                 
-                {/* Write Review Toggle */}
+                {/* Rate & Earn Points Button (Replaces Write Review) */}
                 {!isWriting ? (
                    <button 
                      onClick={() => setIsWriting(true)}
-                     className="w-full py-4 rounded-xl font-bold text-slate-950 bg-cyan-400 hover:bg-cyan-300 transition-colors shadow-[0_0_20px_rgba(34,211,238,0.3)] mb-4 flex items-center justify-center gap-2"
+                     className="w-full py-4 rounded-xl font-bold text-slate-950 bg-cyan-400 hover:bg-cyan-300 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_20px_rgba(34,211,238,0.4)] mb-6 flex items-center justify-center gap-2 uppercase tracking-wide text-sm"
                    >
-                       <MessageSquare size={18} /> Write a Review
+                       <Star size={18} className="fill-slate-950 stroke-slate-950" /> Rate & Earn Points
                    </button>
                 ) : (
                    <motion.div 
@@ -186,18 +220,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ cafe, onClose }) => {
                          </button>
                       </div>
                    </motion.div>
-                )}
-
-                {/* External Links */}
-                {cafe.googleMapsUri && (
-                  <a 
-                    href={cafe.googleMapsUri}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="w-full py-3 mb-6 flex items-center justify-center gap-2 rounded-xl text-sm font-medium text-slate-300 bg-slate-800 hover:bg-slate-700 transition-colors"
-                  >
-                    <MapPin size={16} /> View on Google Maps
-                  </a>
                 )}
 
                 {/* Recent Reviews List */}

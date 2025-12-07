@@ -1,4 +1,5 @@
-import React from 'react';
+
+import React, { useState } from 'react';
 import { Search, Filter } from 'lucide-react';
 import { AmenityKey } from '../types';
 import { AMENITY_CONFIG, AMENITY_KEYS, COLORS } from '../constants';
@@ -7,9 +8,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 interface SearchFilterProps {
   activeFilter: AmenityKey | null;
   onFilterChange: (key: AmenityKey | null) => void;
+  onSearch: (query: string) => void;
 }
 
-export const SearchFilter: React.FC<SearchFilterProps> = ({ activeFilter, onFilterChange }) => {
+export const SearchFilter: React.FC<SearchFilterProps> = ({ activeFilter, onFilterChange, onSearch }) => {
+  const [searchTerm, setSearchTerm] = useState('');
   
   const handleToggleFilter = () => {
     if (!activeFilter) {
@@ -21,6 +24,16 @@ export const SearchFilter: React.FC<SearchFilterProps> = ({ activeFilter, onFilt
       } else {
         onFilterChange(AMENITY_KEYS[currentIndex + 1]); // Next
       }
+    }
+  };
+
+  const handleSearchSubmit = () => {
+    onSearch(searchTerm);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleSearchSubmit();
     }
   };
 
@@ -64,11 +77,16 @@ export const SearchFilter: React.FC<SearchFilterProps> = ({ activeFilter, onFilt
         <div className="flex-1 flex items-center px-4 gap-3">
           <input 
             type="text" 
-            placeholder={activeFilter ? `Filtering by ${currentLabel}...` : "Search roasteries..."}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder={activeFilter ? `Filtering by ${currentLabel}...` : "Search cafes..."}
             className="bg-transparent border-none outline-none w-full text-sm placeholder-slate-500 h-12"
             style={{ color: COLORS.textPrimary, caretColor: '#22d3ee' }} 
           />
-          <Search size={18} className="text-slate-500" />
+          <button onClick={handleSearchSubmit} className="hover:text-cyan-400 transition-colors text-slate-500">
+             <Search size={18} />
+          </button>
         </div>
       </div>
       
